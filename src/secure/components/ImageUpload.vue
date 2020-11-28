@@ -17,7 +17,6 @@ export default {
 
       const data = new FormData;
       data.append('image', file);
-
       const response = await axios.post('upload', data);
 
       emit('file-uploaded', response.data.url);
