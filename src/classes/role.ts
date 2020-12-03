@@ -6,7 +6,7 @@ export class Role implements Entity{
   name: string;
   permissions: Permission[];
 
-  constructor(id: number = 0, name: string = '', permissions: any[]) {
+  constructor(id = 0, name = '', permissions = []) {
     this.id = id;
     this.name = name;
     this.permissions = permissions;

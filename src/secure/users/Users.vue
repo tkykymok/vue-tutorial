@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mc-3 border-bottom">
-    <div class="btn-toolbar mb-2 mb-md-0">
+    <div class="btn-toolbar mb-2 mb-md-0" v-if="authenticatedUser.canEdit('users')">
       <router-link to="/users/create" class="btn btn-sm btn-outline-secondary">Add</router-link>
     </div>
   </div>
@@ -24,7 +24,7 @@
         <td>{{ user.email }}</td>
         <td>{{ user.role.name }}</td>
         <td>
-          <div class="btn-group mr-2">
+          <div class="btn-group mr-2" v-if="authenticatedUser.canEdit('users')">
             <router-link :to="`/users/${user.id}/edit`" class="btn btn-sm btn-outline-success">Edit</router-link>
             <a href="javascript:void(0)" class="btn btn-sm btn-outline-danger" @click="del(user.id)">Delete</a>
           </div>
@@ -38,10 +38,11 @@
 </template>
 
 <script lang="ts">
-import {ref, onMounted} from 'vue';
+import {ref, onMounted, computed} from 'vue';
 import axios from 'axios';
 import {Entity} from '@/interfaces/entity';
 import Paginator from '@/secure/components/Paginator.vue';
+import {useStore} from 'vuex';
 
 export default {
   name: "Users",
@@ -49,6 +50,9 @@ export default {
   setup() {
     const users = ref([]);
     const lastPage = ref(0);
+    const store = useStore();
+
+    const authenticatedUser = computed(() => store.state.User.user);
 
     const load = async (page = 1) => {
       const response = await axios.get(`users?page=${page}`);
@@ -68,7 +72,7 @@ export default {
     onMounted(load);
 
     return {
-      users, lastPage, del, load
+      users, authenticatedUser, del, load
     }
 
   }
